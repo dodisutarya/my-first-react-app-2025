@@ -36,3 +36,21 @@ h2 {
   border-radius: '10px';
   min-height: '100px';
 }
+
+button {
+  background-color: #4b5362;
+  color: #f3f3f3;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  width: 100%;
+}
+
+/* button:hover {
+  background-color: #f3f3f3;
+  color: #4b5362;
+} */
