@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Search from './components/Search'
 import Spinner from './components/Spinner'
 import MovieCard from './components/MovieCard';
+import { useDebounce } from 'react-use';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 
@@ -22,12 +23,18 @@ const App = () => {
   const [erroMessage, setErrorMessage] = useState('');
   const [movieList, setMovieList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
-  const fetchMovies = async () => {
-    // setIsLoading(true);
+  // Debounce the search term input to limit API calls
+  // by waiting for 500ms of inactivity before updating the debounced value
+  useDebounce(() => setDebouncedSearchTerm(searchTerm), 500, [searchTerm]);
+
+
+  const fetchMovies = async (query = '') => {
+
     setErrorMessage('');
     try {
-      const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+      const endpoint = query ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}` : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
 
       const response = await fetch(endpoint, API_OPTIONS);
 
@@ -54,8 +61,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchMovies();
-  }), [];
+    fetchMovies(debouncedSearchTerm);
+  }), [debouncedSearchTerm];
 
   return (
     <main>
@@ -68,7 +75,7 @@ const App = () => {
         </header>
 
         <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        <h1 className='text-white'>{searchTerm}</h1>
+        {/* <h1 className='text-white'>{searchTerm}</h1> */}
 
         <section className='all-movies'>
           <h2 className='mt-10'>All Movies</h2>
